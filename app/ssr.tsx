@@ -1,8 +1,10 @@
 // app/ssr.tsx
 import {
     createStartHandler,
-    defaultStreamHandler,
+    defaultStreamHandler, // `defaultStreamHandler` is used to render our application to a stream, allowing us to take advantage of streaming HTML to the client. (This is the default handler, but you can also use other handlers like defaultRenderHandler, or even build your own)
 } from '@tanstack/start/server'
+
+// `getRouterManifest` is used to generate the router manifest, which is used to determine many aspects of asset management and preloading for our application.
 import { getRouterManifest } from '@tanstack/start/router-manifest'
 
 import { createRouter } from './router'
@@ -17,6 +19,10 @@ import { createRouter } from './router'
  * user hits a given route.
  * 
  * https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#the-server-entry-point
+ * 
+ * # Other things to know
+ * 
+ * - A new router is created for each request
  */
 
 export default createStartHandler({
