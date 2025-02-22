@@ -26,14 +26,22 @@ const updateCount = createServerFn({ method: 'POST' })
 
 export const Route = createFileRoute('/')({
   component: Home,
-  loader: async () => await getCount(),
+  loader: async (ctx) => ({count: await getCount(), user: ctx.context.user}),
 })
 
 function Home() {
   const router = useRouter()
   const state = Route.useLoaderData()
 
-  return (
+  const displayUser = () => {
+    if(state.user){
+      return <div>Hello, {state.user.displayName}</div>
+    }
+    return null
+  }
+
+  return <>
+    {displayUser()}
     <button
       type="button"
       onClick={() => {
@@ -42,7 +50,7 @@ function Home() {
         })
       }}
     >
-      Add 1 to {state}?
+      Add 1 to {state.count}?
     </button>
-  )
+    </>
 }

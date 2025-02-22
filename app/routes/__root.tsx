@@ -6,6 +6,19 @@ import {
   HeadContent,
   Scripts,
 } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/start'
+import { getCookie } from '@tanstack/start/server'
+import { getSessionUser } from '../auth'
+
+
+const fetchAuth = createServerFn({ method: 'GET' }).handler(async () => {
+  const sessionId = getCookie('session_id')
+  if(sessionId === undefined){
+    return undefined
+  }
+
+  return getSessionUser(sessionId)
+})
 
 /**
  * # What is this file?
@@ -37,13 +50,20 @@ export const Route = createRootRoute({
       },
     ],
   }),
+  beforeLoad: async () => {
+    const user = await fetchAuth()
+
+    return {
+      user,
+    }
+  },
   component: RootComponent,
 })
 
 function RootComponent() {
   return (
     <RootDocument>
-      <Outlet />
+        <Outlet />
     </RootDocument>
   )
 }
